@@ -107,7 +107,7 @@ requirements.txt
 ### Company Details
 ![Velos Details](screenshots/velos_details.png)
 
-### Filtering
+### Empty page (no data)
 ![Velos Filter](screenshots/velos_filter.png)
 ---
 
