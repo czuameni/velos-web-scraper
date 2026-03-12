@@ -1,77 +1,109 @@
-<<<<<<< HEAD
-# Velos – Google Maps Web Scraper
+# Velos – Google Maps Lead Scraper
 
-Velos is a Python-based desktop tool for automatically building business databases by scraping Google Maps.
+Velos is a Python automation tool that collects company data from Google Maps and builds a structured lead database.
 
-The application collects company information such as:
-
-- company name
-- address
-- phone number
-- website
-- email (if found on the website)
-
-The data is stored in a local SQLite database and can be exported to CSV or browsed through a desktop GUI.
+The application is designed for lead generation, market research, and recruitment prospecting.
 
 ---
 
 # Features
 
-• Automated Google Maps scraping  
-• Multi-region and multi-city support  
-• Multi-keyword search system  
-• Email crawler from company websites  
-• SQLite database storage  
-• CSV export  
-• Desktop GUI for browsing the database  
-• Search and filtering tools  
-• Email copy shortcut for outreach
+- Google Maps scraping
+- Company data extraction
+- Website email crawler
+- SQLite database storage
+- CSV export
+- GUI application (Tkinter)
+- Executable desktop build
+
+Collected data includes:
+
+- Company name
+- City
+- Voivodeship
+- Address
+- Phone number
+- Website
+- Email
+- Source
+- Scrape date
 
 ---
 
 # Technologies Used
 
-- Python
+Python
+
+Libraries:
+
 - Playwright
-- SQLite
 - Pandas
+- SQLite3
 - Tkinter
+- Requests
+- BeautifulSoup
 
 ---
 
 # Installation
 
-Clone the repository:
+Clone the repository
 
+```
 git clone https://github.com/czuameni/velos-web-scraper.git
+```
 
-cd velos-web-scraper
+Install dependencies
 
-Install dependencies:
-
+```
 pip install -r requirements.txt
+```
 
-Install Playwright browsers:
+Install Playwright browser
 
+```
 playwright install
+```
 
 ---
 
-# Running the Scraper
+# Usage
 
+Run scraper
+
+```
 python pbc.py
+```
 
----
+Run GUI
 
-# Running GUI
-
+```
 python gui_app.py
+```
 
 ---
 
-# Author
+# Project Structure
 
-Created by czuameni
-=======
-# velos-web-scraper
->>>>>>> 207b6a08d9f3371e0d0f15ea207114d49a339a8c
+```
+maps_scraper.py
+website_crawler.py
+email_extractor.py
+db.py
+exporter.py
+gui_app.py
+config.py
+keywords.txt
+regions.txt
+cities_opolskie.txt
+requirements.txt
+```
+
+---
+
+# Example Use Cases
+
+- recruitment lead generation
+- business development prospecting
+- market research
+- company database building
