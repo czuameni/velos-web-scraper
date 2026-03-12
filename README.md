@@ -99,6 +99,16 @@ cities_opolskie.txt
 requirements.txt
 ```
 
+## Application Preview
+
+### Main Interface
+![Velos Main](screenshots/velos_main.png)
+
+### Company Details
+![Velos Details](screenshots/velos_details.png)
+
+### Filtering
+![Velos Filter](screenshots/velos_filter.png)
 ---
 
 # Example Use Cases
