@@ -1,0 +1,18 @@
+# databases
+*.db
+
+# csv exports
+*.csv
+
+# python cache
+__pycache__/
+
+# build folders
+build/
+dist/
+
+# pyinstaller
+*.spec
+
+# exe files
+*.exe
