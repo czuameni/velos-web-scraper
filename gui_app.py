@@ -15,6 +15,22 @@ DB_NAME = "opolskie_firms.db"
 def load_data():
 
     conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    # zawsze upewnij się że tabela istnieje
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS firms (
+        name TEXT,
+        address TEXT,
+        city TEXT,
+        voivodeship TEXT,
+        phone TEXT,
+        email TEXT,
+        website TEXT
+    )
+    """)
+
+    conn.commit()
 
     df = pd.read_sql_query(
         "SELECT * FROM firms",
