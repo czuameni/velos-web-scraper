@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Velos – Google Maps Web Scraper
 
 Velos is a Python-based desktop tool for automatically building business databases by scraping Google Maps.
@@ -71,3 +72,6 @@ python gui_app.py
 # Author
 
 Created by czuameni
+=======
+# velos-web-scraper
+>>>>>>> 207b6a08d9f3371e0d0f15ea207114d49a339a8c
