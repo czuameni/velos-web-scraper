@@ -20,10 +20,12 @@ def load_data():
     # zawsze upewnij się że tabela istnieje
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS firms (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         address TEXT,
         city TEXT,
         voivodeship TEXT,
+        industry TEXT,
         phone TEXT,
         email TEXT,
         website TEXT
