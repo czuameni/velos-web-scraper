@@ -118,6 +118,8 @@ requirements.txt
 - market research
 - company database building
 
+## Installation
+
 Clone the repository:
 
 ```bash
