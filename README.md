@@ -104,9 +104,6 @@ requirements.txt
 ### Main Interface
 ![Velos Main](screenshots/velos_main.png)
 
-### Company Details
-![Velos Details](screenshots/velos_details.png)
-
 ### Empty page (no data)
 ![Velos Filter](screenshots/velos_filter.png)
 ---
