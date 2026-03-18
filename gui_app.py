@@ -9,6 +9,26 @@ DB_NAME = "opolskie_firms.db"
 
 
 # ==============================
+# CLEAN VALUES (nan -> brak)
+# ==============================
+
+def clean_value(val):
+    if val is None or str(val).lower() == "nan":
+        return "brak"
+
+    val = str(val)
+
+    val = val.replace("\ue0c8", "")
+    val = val.replace("\ue0b0", "")
+
+    val = val.replace("\n", " ")
+
+    val = " ".join(val.split())
+
+    return val.strip()
+
+
+# ==============================
 # LOAD DATA
 # ==============================
 
@@ -17,7 +37,6 @@ def load_data():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # zawsze upewnij się że tabela istnieje
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS firms (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,11 +54,14 @@ def load_data():
     conn.commit()
 
     df = pd.read_sql_query(
-        "SELECT * FROM firms",
+        "SELECT id, name, address, city, voivodeship, phone, email, website FROM firms",
         conn
     )
 
     conn.close()
+
+    # USUWAMY NIEPOTRZEBNE KOLUMNY
+    df = df.drop(columns=["industry"], errors="ignore")
 
     return df
 
@@ -61,41 +83,47 @@ def export_csv(df):
 
 
 # ==============================
-# SHOW DETAILS POPUP
+# DOUBLE CLICK EDIT (NOWE)
 # ==============================
 
-def show_details(event):
+def edit_cell(event):
 
     selected = table.focus()
-
     if not selected:
         return
 
-    values = table.item(selected, "values")
+    column = table.identify_column(event.x)
+    col_index = int(column.replace("#", "")) - 1
 
-    details = ""
+    x, y, width, height = table.bbox(selected, column)
 
-    for col, val in zip(columns, values):
-        details += f"{col}: {val}\n\n"
+    value = table.item(selected)["values"][col_index]
 
-    popup = Toplevel(root)
-    popup.title("Szczegóły firmy")
-    popup.geometry("600x400")
+    entry = tk.Entry(root)
+    entry.place(x=x, y=y + 50, width=width)
 
-    text = Text(popup, wrap="word")
-    text.insert("1.0", details)
-    text.config(state="disabled")
-    text.pack(fill="both", expand=True)
+    entry.insert(0, value)
+    entry.focus()
+
+    def save_edit(event):
+        new_value = entry.get()
+
+        values = list(table.item(selected)["values"])
+        values[col_index] = new_value
+
+        table.item(selected, values=values)
+        entry.destroy()
+
+    entry.bind("<Return>", save_edit)
 
 
 # ==============================
-# OPEN WEBSITE (PPM)
+# OPEN WEBSITE
 # ==============================
 
 def open_website(event):
 
     selected = table.focus()
-
     if not selected:
         return
 
@@ -113,13 +141,12 @@ def open_website(event):
 
 
 # ==============================
-# COPY EMAIL TO CLIPBOARD
+# COPY EMAIL
 # ==============================
 
 def copy_email(event):
 
     selected = table.focus()
-
     if not selected:
         return
 
@@ -129,12 +156,10 @@ def copy_email(event):
         email_index = columns.index("email")
         email = values[email_index]
 
-        if email:
+        if email and email != "brak":
             root.clipboard_clear()
             root.clipboard_append(email)
             root.update()
-
-            print(f"Copied: {email}")
 
     except:
         pass
@@ -162,11 +187,11 @@ def refresh_table():
     if email_only.get():
         df = df[df["email"].notna()]
 
-    # WOJ FILTER
+    # WOJ
     if woj_filter.get():
         df = df[df["voivodeship"] == woj_filter.get()]
 
-    # CITY FILTER
+    # CITY
     if city_filter.get():
         df = df[df["city"] == city_filter.get()]
 
@@ -174,24 +199,21 @@ def refresh_table():
 
     for _, row in df.iterrows():
 
-        tags = ()
+        clean_row = [clean_value(row[col]) for col in df.columns]
 
-        if pd.notna(row["email"]):
+        tags = ()
+        if row["email"] and str(row["email"]).lower() != "nan":
             tags = ("has_email",)
 
         table.insert(
             "",
             "end",
-            values=list(row),
+            values=clean_row,
             tags=tags
         )
 
-    # ==============================
-    # COVERAGE STATS (TU MUSI BYĆ)
-    # ==============================
-
+    # STATS
     firms_count = len(df)
-
     emails_count = df["email"].notna().sum()
 
     coverage = (
@@ -205,73 +227,50 @@ def refresh_table():
 
 
 # ==============================
-# GUI ROOT
+# GUI
 # ==============================
 
 root = tk.Tk()
-
 root.iconbitmap("logo.ico")
-
 root.title("Velos")
 root.geometry("1200x600")
 
 
 # ==============================
-# FILTER FRAME
+# FILTERS
 # ==============================
 
 filter_frame = tk.Frame(root)
 filter_frame.pack(fill="x", padx=10, pady=5)
 
-
-# SEARCH VAR (MUSI BYĆ TU)
 search_var = tk.StringVar()
 email_only = tk.BooleanVar()
 
-
-# WOJ
 tk.Label(filter_frame, text="Województwo").pack(side="left")
-
 woj_filter = ttk.Combobox(filter_frame)
 woj_filter.pack(side="left", padx=5)
 
-
-# CITY
 tk.Label(filter_frame, text="Miasto").pack(side="left")
-
 city_filter = ttk.Combobox(filter_frame)
 city_filter.pack(side="left", padx=5)
 
-
-# SEARCH
 tk.Label(filter_frame, text="Szukaj").pack(side="left")
 
-search_entry = tk.Entry(
-    filter_frame,
-    textvariable=search_var,
-    width=25
-)
-
+search_entry = tk.Entry(filter_frame, textvariable=search_var, width=25)
 search_entry.pack(side="left", padx=5)
 
-
-# EMAIL ONLY
 tk.Checkbutton(
     filter_frame,
     text="Tylko z mailem",
     variable=email_only
 ).pack(side="left", padx=10)
 
-
-# FILTER BUTTON
 tk.Button(
     filter_frame,
     text="Filtruj",
     command=refresh_table
 ).pack(side="left", padx=5)
 
-
-# EXPORT
 tk.Button(
     filter_frame,
     text="Eksport CSV",
@@ -293,20 +292,19 @@ table = ttk.Treeview(
     show="headings"
 )
 
+table["displaycolumns"] = columns
+table.column("#0", width=0, stretch=False)
+
 for col in columns:
     table.heading(col, text=col)
-    table.column(col, width=140)
+    table.column(col, width=150, anchor="w")
 
 table.pack(fill="both", expand=True)
 
-# COLOR EMAIL ROWS
-table.tag_configure(
-    "has_email",
-    background="#d0ffd0"
-)
+table.tag_configure("has_email", background="#d0ffd0")
 
 # EVENTS
-table.bind("<Double-1>", show_details)
+table.bind("<Double-1>", edit_cell)   # 🔥 NOWE
 table.bind("<Button-3>", open_website)
 table.bind("<Button-1>", copy_email)
 
@@ -320,7 +318,7 @@ stats_label.pack(pady=5)
 
 
 # ==============================
-# INIT DATA
+# INIT
 # ==============================
 
 woj_filter["values"] = sorted(
@@ -332,6 +330,5 @@ city_filter["values"] = sorted(
 )
 
 refresh_table()
-
 
 root.mainloop()

@@ -1,0 +1,272 @@
+📘 Instrukcja korzystania z Velos (Web Scraper)
+
+Velos to aplikacja do zbierania danych firm z Google Maps i budowania bazy danych zawierającej:
+
+nazwy firm
+
+adresy
+
+numery telefonów
+
+strony WWW
+
+adresy email (jeśli znalezione)
+
+Dane zapisywane są w bazie SQLite oraz w pliku CSV.
+
+1️⃣ Struktura projektu
+
+Folder projektu wygląda mniej więcej tak:
+
+Velos/
+│
+├── maps_scraper.py
+├── website_crawler.py
+├── db.py
+├── exporter.py
+├── gui_app.py
+├── pbc.py
+│
+├── regions.txt
+├── keywords.txt
+├── cities_opolskie.txt
+├── cities_slaskie.txt
+├── cities_malopolskie.txt
+│
+└── firms.db
+2️⃣ Konfiguracja regionów
+
+Plik:
+
+regions.txt
+
+Określa województwa do scrapowania.
+
+Przykład:
+
+opolskie
+slaskie
+malopolskie
+dolnoslaskie
+
+Dla każdego regionu musi istnieć plik:
+
+cities_REGION.txt
+3️⃣ Konfiguracja miast
+
+Dla każdego województwa tworzymy plik:
+
+cities_opolskie.txt
+
+Przykład:
+
+Opole
+Nysa
+Brzeg
+Krapkowice
+Kluczbork
+Prudnik
+Głubczyce
+
+Scraper będzie szukał firm dla każdego miasta osobno.
+
+4️⃣ Konfiguracja słów kluczowych
+
+Plik:
+
+keywords.txt
+
+Określa jakie firmy mają być wyszukiwane.
+
+Przykład:
+
+magazyn
+logistyka
+transport
+hurtownia
+centrum logistyczne
+centrum dystrybucji
+
+Scraper wykonuje zapytania typu:
+
+magazyn Opole opolskie
+logistyka Opole opolskie
+transport Opole opolskie
+5️⃣ Uruchomienie scrapera
+
+W terminalu przechodzimy do folderu projektu:
+
+cd C:\Users\...\Velos
+
+Uruchamiamy:
+
+python pbc.py
+
+Program wykona kolejno:
+
+1️⃣ stworzenie bazy danych
+2️⃣ scrapowanie Google Maps
+3️⃣ zapis firm
+4️⃣ eksport CSV
+
+6️⃣ Jak wygląda proces scrapowania
+
+Dla każdego regionu:
+
+===== REGION: OPOLSKIE =====
+
+dla każdego miasta:
+
+Searching city: Opole
+
+dla każdego słowa kluczowego:
+
+Keyword: logistyka
+
+scraper:
+
+1️⃣ otwiera Google Maps
+2️⃣ scrolluje wyniki
+3️⃣ klika każdą firmę
+4️⃣ zbiera dane
+
+7️⃣ Jakie dane są zbierane
+
+Dla każdej firmy scraper zapisuje:
+
+name          → nazwa firmy
+voivodeship   → województwo
+city          → miasto
+address       → adres
+phone         → telefon
+website       → strona www
+email         → znaleziony email
+source        → Google Maps
+scrape_date   → data scrapu
+8️⃣ Jak działa wyszukiwanie maili
+
+Jeśli firma ma stronę WWW:
+
+scraper:
+
+1️⃣ wchodzi na stronę
+2️⃣ sprawdza podstrony typu
+
+kontakt
+contact
+o nas
+about
+
+3️⃣ wyszukuje adresy email
+
+9️⃣ Gdzie zapisywane są dane
+
+Dane zapisywane są w dwóch miejscach.
+
+baza danych
+firms.db
+plik CSV
+firms_export.csv
+
+CSV można otworzyć np. w:
+
+Excel
+
+LibreOffice
+
+Google Sheets
+
+🔟 GUI aplikacji
+
+Można przeglądać bazę przez interfejs.
+
+Uruchom:
+
+python gui_app.py
+
+GUI pozwala:
+
+filtrować firmy po województwie
+
+filtrować po mieście
+
+wyszukiwać firmy
+
+pokazać tylko firmy z emailem
+
+kopiować email jednym kliknięciem
+
+otworzyć stronę firmy
+
+eksportować CSV
+
+1️⃣1️⃣ Reset bazy danych
+
+Aby zacząć scrap od zera:
+
+usuń plik:
+
+firms.db
+
+Przy następnym uruchomieniu scraper utworzy nową bazę.
+
+1️⃣2️⃣ Typowy workflow
+
+Przykład użycia:
+
+1️⃣ ustaw regiony
+regions.txt
+2️⃣ ustaw miasta
+cities_region.txt
+3️⃣ ustaw branże
+keywords.txt
+4️⃣ uruchom scraper
+python pbc.py
+5️⃣ sprawdź wyniki
+firms_export.csv
+
+lub
+
+python gui_app.py
+1️⃣3️⃣ Wydajność
+
+Przykładowe wyniki:
+
+zakres	liczba firm
+małe miasto	50–200
+powiat	300–1000
+województwo	2000–15000
+1️⃣4️⃣ Najlepsze słowa kluczowe
+
+Najwięcej firm zwykle daje:
+
+firmy
+usługi
+produkcja
+magazyn
+logistyka
+transport
+hurtownia
+1️⃣5️⃣ Rozszerzenie zasięgu
+
+Aby zwiększyć liczbę firm:
+
+dodaj więcej miast
+
+dodaj więcej keywords
+
+dodaj więcej regionów
+
+✔️ Podsumowanie
+
+Velos pozwala:
+
+automatycznie zbierać firmy z Google Maps
+
+budować bazę kontaktów B2B
+
+znaleźć telefony i emaile
+
+filtrować firmy w GUI
+
+eksportować dane do CSV
