@@ -101,10 +101,10 @@ requirements.txt
 
 ## Application Preview
 
-### Main Interface
+### Main Interface (data deliberately hidden)
 ![Velos Main](screenshots/velos_main.png)
 
-### Empty page (no data)
+### Email filter applied (shows only those positions where email address is present)
 ![Velos Filter](screenshots/velos_filter.png)
 ---
 
