@@ -5,17 +5,7 @@ import base64
 from playwright.sync_api import sync_playwright
 from config import HEADERS
 
-
-# ==============================
-# REGEX
-# ==============================
-
 EMAIL_REGEX = r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
-
-
-# ==============================
-# CLEAN
-# ==============================
 
 def clean_emails(emails):
 
@@ -35,11 +25,6 @@ def clean_emails(emails):
 
     return list(set(clean))
 
-
-# ==============================
-# OBFUSCATION DECODE
-# ==============================
-
 def decode_obfuscation(text):
 
     text = text.replace(" [at] ", "@")
@@ -52,11 +37,6 @@ def decode_obfuscation(text):
 
     return text
 
-
-# ==============================
-# CLOUDFLARE DECODE
-# ==============================
-
 def decode_cfemail(cfemail):
 
     r = int(cfemail[:2], 16)
@@ -66,11 +46,6 @@ def decode_cfemail(cfemail):
     )
 
     return email
-
-
-# ==============================
-# REQUEST SCAN
-# ==============================
 
 def scan_requests(url):
 
@@ -93,11 +68,6 @@ def scan_requests(url):
         pass
 
     return emails
-
-
-# ==============================
-# PLAYWRIGHT JS SCAN
-# ==============================
 
 def scan_js(url):
 
@@ -123,11 +93,6 @@ def scan_js(url):
         pass
 
     return emails
-
-
-# ==============================
-# MAIN CRAWLER
-# ==============================
 
 def crawl_website(base_url):
 
