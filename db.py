@@ -1,11 +1,6 @@
 import sqlite3
 from config import DB_NAME
 
-
-# ==============================
-# SETUP DB
-# ==============================
-
 def setup_db():
 
     conn = sqlite3.connect(DB_NAME)
@@ -29,11 +24,6 @@ def setup_db():
 
     conn.commit()
     conn.close()
-
-
-# ==============================
-# DUPLICATE CHECK
-# ==============================
 
 def firm_exists(c, data):
 
@@ -62,11 +52,6 @@ def firm_exists(c, data):
         return True
 
     return False
-
-
-# ==============================
-# SAVE FIRM
-# ==============================
 
 def save_firm(data):
 
