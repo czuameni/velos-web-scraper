@@ -6,30 +6,15 @@ from playwright.async_api import async_playwright
 from db import save_firm
 from website_crawler import crawl_website
 
-
-# ==============================
-# LOAD REGIONS
-# ==============================
-
 def load_regions():
 
     with open("regions.txt", "r", encoding="utf-8") as f:
         return [line.strip() for line in f if line.strip()]
 
-
-# ==============================
-# LOAD KEYWORDS
-# ==============================
-
 def load_keywords():
 
     with open("keywords.txt", "r", encoding="utf-8") as f:
         return [line.strip() for line in f if line.strip()]
-
-
-# ==============================
-# MAIN SCRAPER
-# ==============================
 
 async def scrape_maps():
 
@@ -63,10 +48,6 @@ async def scrape_maps():
 
                     await page.wait_for_timeout(5000)
 
-                    # ==============================
-                    # SCROLL RESULTS
-                    # ==============================
-
                     results_panel = page.locator('div[role="feed"]')
 
                     if await results_panel.count() == 0:
@@ -79,19 +60,11 @@ async def scrape_maps():
                         )
                         await page.wait_for_timeout(2000)
 
-                    # ==============================
-                    # COLLECT LISTINGS
-                    # ==============================
-
                     listings = await page.locator(
                         'a[href*="/place"]'
                     ).all()
 
                     print(f"Found listings: {len(listings)}")
-
-                    # ==============================
-                    # SCRAPE EACH FIRM
-                    # ==============================
 
                     for i, listing in enumerate(listings):
 
@@ -101,7 +74,6 @@ async def scrape_maps():
                             await listing.click(force=True)
                             await page.wait_for_timeout(4000)
 
-                            # NAME
                             name_el = page.locator("h1.DUwDvf")
 
                             if await name_el.count() == 0:
@@ -109,7 +81,6 @@ async def scrape_maps():
 
                             name = await name_el.inner_text()
 
-                            # ADDRESS
                             address = None
                             addr_el = page.locator(
                                 'button[data-item-id="address"]'
@@ -118,7 +89,6 @@ async def scrape_maps():
                             if await addr_el.count() > 0:
                                 address = await addr_el.inner_text()
 
-                            # PHONE
                             phone = None
                             phone_el = page.locator(
                                 'button[data-item-id^="phone"]'
@@ -127,7 +97,6 @@ async def scrape_maps():
                             if await phone_el.count() > 0:
                                 phone = await phone_el.inner_text()
 
-                            # WEBSITE
                             website = None
                             web_el = page.locator(
                                 'a[data-item-id="authority"]'
@@ -136,17 +105,12 @@ async def scrape_maps():
                             if await web_el.count() > 0:
                                 website = await web_el.get_attribute("href")
 
-                            # EMAIL CRAWL
                             email = None
 
                             if website:
                                 emails = crawl_website(website)
                                 if emails:
                                     email = emails[0]
-
-                            # ==============================
-                            # SAVE DATA
-                            # ==============================
 
                             data = {
                                 "name": name,
@@ -169,10 +133,6 @@ async def scrape_maps():
 
         await browser.close()
 
-
-# ==============================
-# RUN WRAPPER
-# ==============================
 
 def run_maps():
     asyncio.run(scrape_maps())
