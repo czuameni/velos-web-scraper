@@ -7,11 +7,6 @@ import webbrowser
 
 DB_NAME = "opolskie_firms.db"
 
-
-# ==============================
-# CLEAN VALUES (nan -> brak)
-# ==============================
-
 def clean_value(val):
     if val is None or str(val).lower() == "nan":
         return "brak"
@@ -26,11 +21,6 @@ def clean_value(val):
     val = " ".join(val.split())
 
     return val.strip()
-
-
-# ==============================
-# LOAD DATA
-# ==============================
 
 def load_data():
 
@@ -60,15 +50,10 @@ def load_data():
 
     conn.close()
 
-    # USUWAMY NIEPOTRZEBNE KOLUMNY
     df = df.drop(columns=["industry"], errors="ignore")
 
     return df
 
-
-# ==============================
-# EXPORT CSV
-# ==============================
 
 def export_csv(df):
 
@@ -81,10 +66,6 @@ def export_csv(df):
         df.to_csv(path, index=False)
         messagebox.showinfo("Export", "CSV exported.")
 
-
-# ==============================
-# DOUBLE CLICK EDIT (NOWE)
-# ==============================
 
 def edit_cell(event):
 
@@ -117,10 +98,6 @@ def edit_cell(event):
     entry.bind("<Return>", save_edit)
 
 
-# ==============================
-# OPEN WEBSITE
-# ==============================
-
 def open_website(event):
 
     selected = table.focus()
@@ -139,10 +116,6 @@ def open_website(event):
     except:
         pass
 
-
-# ==============================
-# COPY EMAIL
-# ==============================
 
 def copy_email(event):
 
@@ -165,15 +138,10 @@ def copy_email(event):
         pass
 
 
-# ==============================
-# REFRESH TABLE
-# ==============================
-
 def refresh_table():
 
     df = load_data()
 
-    # SEARCH
     if search_var.get():
         df = df[
             df["name"].str.contains(
@@ -183,15 +151,12 @@ def refresh_table():
             )
         ]
 
-    # EMAIL ONLY
     if email_only.get():
         df = df[df["email"].notna()]
 
-    # WOJ
     if woj_filter.get():
         df = df[df["voivodeship"] == woj_filter.get()]
 
-    # CITY
     if city_filter.get():
         df = df[df["city"] == city_filter.get()]
 
@@ -212,7 +177,6 @@ def refresh_table():
             tags=tags
         )
 
-    # STATS
     firms_count = len(df)
     emails_count = df["email"].notna().sum()
 
@@ -226,19 +190,11 @@ def refresh_table():
     )
 
 
-# ==============================
-# GUI
-# ==============================
-
 root = tk.Tk()
 root.iconbitmap("logo.ico")
 root.title("Velos")
 root.geometry("1200x600")
 
-
-# ==============================
-# FILTERS
-# ==============================
 
 filter_frame = tk.Frame(root)
 filter_frame.pack(fill="x", padx=10, pady=5)
@@ -278,10 +234,6 @@ tk.Button(
 ).pack(side="right", padx=5)
 
 
-# ==============================
-# TABLE
-# ==============================
-
 df_init = load_data()
 
 columns = list(df_init.columns)
@@ -309,17 +261,9 @@ table.bind("<Button-3>", open_website)
 table.bind("<Button-1>", copy_email)
 
 
-# ==============================
-# STATS
-# ==============================
-
 stats_label = tk.Label(root, text="Firmy: 0")
 stats_label.pack(pady=5)
 
-
-# ==============================
-# INIT
-# ==============================
 
 woj_filter["values"] = sorted(
     df_init["voivodeship"].dropna().unique()
